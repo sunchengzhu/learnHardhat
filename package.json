@@ -1,0 +1,12 @@
+{
+  "name": "learnHardhat",
+  "scripts": {
+    "addRpcLog": "patch-package"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "chai": "^4.3.7",
+    "hardhat": "^2.12.2",
+    "patch-package": "^6.5.0"
+  }
+}
