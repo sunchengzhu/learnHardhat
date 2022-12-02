@@ -6,7 +6,7 @@ const GOERLI_PRIVATE_KEY = "5af7968aa9b98c864e716ec42ea37d75a7904f0a5adc040405c2
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-    defaultNetwork: "goerli",
+    defaultNetwork: "localhost",
     networks: {
         hardhat: {
             loggingEnabled: true

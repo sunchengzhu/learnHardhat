@@ -7,7 +7,7 @@ describe("deploy", function () {
         const contract = await Learn.deploy();
         await contract.deployed();
         console.log("contract address:", contract.address);
-    }).timeout(30000)
+    }).timeout(60000)
 })
 
 describe("invoke", function () {
