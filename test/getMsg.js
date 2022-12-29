@@ -1,6 +1,4 @@
-const {ethers} = require("hardhat");
-const {config} = require("hardhat");
-
+const {ethers, config} = require("hardhat");
 
 describe("get msg", function () {
     it("get block msg", async () => {
@@ -15,16 +13,22 @@ describe("get msg", function () {
     }).timeout(60000)
 
     it("get account msg", async () => {
-        const accounts = config.networks.hardhat.accounts;
+        const accounts = config.networks.localhost.accounts;
         const index = 0;
         const wallet = ethers.Wallet.fromMnemonic(accounts.mnemonic, accounts.path + `/${index}`);
         const signers = await ethers.getSigners();
-        const acctMap = await getSignersBalance(signers, 20);
+        const acctMap = await getSignersBalance(signers, 10);
         console.log(`${wallet.address} private key:${wallet.privateKey}`);
         acctMap.forEach(function (value, key) {
             console.log(`${key} balance: ${value}`)
         });
     }).timeout(60000)
+
+    it("get random mnemonic",async () => {
+        const wallet = ethers.Wallet.createRandom();
+        const randomMnemonic = wallet.mnemonic;
+        console.log(randomMnemonic);
+    }).timeout(30000)
 })
 
 async function getGasPrice(provider) {
