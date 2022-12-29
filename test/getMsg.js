@@ -14,13 +14,13 @@ describe("get msg", function () {
 
     it("get account msg", async () => {
         const accounts = config.networks.localhost.accounts;
-        const index = 0;
-        const wallet = ethers.Wallet.fromMnemonic(accounts.mnemonic, accounts.path + `/${index}`);
+        const wallet = ethers.Wallet.fromMnemonic(accounts.mnemonic, accounts.path + `/${accounts.initialIndex}`);
         const signers = await ethers.getSigners();
         const acctMap = await getSignersBalance(signers, 10);
         console.log(`${wallet.address} private key:${wallet.privateKey}`);
-        acctMap.forEach(function (value, key) {
-            console.log(`${key} balance: ${value}`)
+        let index = 0;
+        acctMap.forEach((value, key) => {
+            console.log(`account${index++} ${key} balance: ${value}`);
         });
     }).timeout(60000)
 
@@ -30,6 +30,7 @@ describe("get msg", function () {
         console.log(randomMnemonic);
     }).timeout(30000)
 })
+
 
 async function getGasPrice(provider) {
     const gasPrice = await provider.getGasPrice();
