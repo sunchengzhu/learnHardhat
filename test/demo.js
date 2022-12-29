@@ -10,6 +10,7 @@ describe("deploy", function () {
     }).timeout(60000)
 })
 
+
 describe("invoke", function () {
     let learn, learnAddress;
     before(async function () {
@@ -25,14 +26,17 @@ describe("invoke", function () {
         }
         learn = await Learn.attach(learnAddress);
     });
+
     it("invoke pure function", async () => {
         const result = await learn.add(1, 2);
         console.log("result:", result);
     }).timeout(30000)
+
     it("get add function call data", async () => {
         const data = await learn.getCallData(1, 2);
         console.log("result:", data);
     }).timeout(30000)
+
     it("invoke function", async () => {
         const randomNum = Math.floor(Math.random() * 1000000);
         const tx = await learn.setValue(randomNum);
@@ -42,6 +46,7 @@ describe("invoke", function () {
         console.log("receipt:", receipt);
         console.log("value:", value);
     }).timeout(30000)
+
     it("invoke function call static", async () => {
         const randomNum = Math.floor(Math.random() * 1000000);
         const result = await learn.callStatic.setValue(randomNum);
