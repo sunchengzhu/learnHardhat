@@ -24,7 +24,7 @@ describe("get msg", function () {
         });
     }).timeout(60000)
 
-    it("get random mnemonic",async () => {
+    it("get random mnemonic", async () => {
         const wallet = ethers.Wallet.createRandom();
         const randomMnemonic = wallet.mnemonic;
         console.log(randomMnemonic);
