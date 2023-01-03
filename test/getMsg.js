@@ -18,9 +18,11 @@ describe("get msg", function () {
         const signers = await ethers.getSigners();
         const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
         const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额");
+        const requestFnList1 = signers.map((signer) => () => ethers.provider.getTransactionCount(signer.address))
+        const reply1 = await concurrentRun(requestFnList1, 20, "查询所有账户nonce");
         console.log(`${wallet.address} private key:${wallet.privateKey}`);
-        for (let i = 0; i < reply.length; i++) {
-            console.log(`account${i} ${signers[i].address} balance: ${ethers.utils.formatEther(reply[i])} eth`);
+        for (let i = 0; i < signers.length; i++) {
+            console.log(`account${i} ${signers[i].address} balance: ${ethers.utils.formatEther(reply[i])} eth,nonce: ${reply1[i]}`);
         }
     }).timeout(60000)
 
