@@ -13,14 +13,11 @@ describe("get msg", function () {
     }).timeout(60000)
 
     it("get account msg", async () => {
-        const accounts = config.networks.localhost.accounts;
-        const wallet = ethers.Wallet.fromMnemonic(accounts.mnemonic, accounts.path + `/${accounts.initialIndex}`);
         const signers = await ethers.getSigners();
         const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
         const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额");
         const requestFnList1 = signers.map((signer) => () => ethers.provider.getTransactionCount(signer.address))
         const reply1 = await concurrentRun(requestFnList1, 20, "查询所有账户nonce");
-        console.log(`${wallet.address} private key:${wallet.privateKey}`);
         for (let i = 0; i < signers.length; i++) {
             console.log(`account${i} ${signers[i].address} balance: ${ethers.utils.formatEther(reply[i])} eth,nonce: ${reply1[i]}`);
         }
@@ -30,6 +27,21 @@ describe("get msg", function () {
         const wallet = ethers.Wallet.createRandom();
         const randomMnemonic = wallet.mnemonic;
         console.log(randomMnemonic);
+    }).timeout(30000)
+
+    it("get private key from mnemonic", async () => {
+        const numWallet = 20
+        const hdNode = ethers.utils.HDNode.fromMnemonic(config.networks.localhost.accounts.mnemonic)
+        // 派生路径：m / purpose' / coin_type' / account' / change / address_index
+        // 我们只需要切换最后一位address_index，就可以从hdNode派生出新钱包
+        let basePath = "m/44'/60'/0'/0";
+        let wallets = [];
+        for (let i = 0; i < numWallet; i++) {
+            let hdNodeNew = hdNode.derivePath(basePath + "/" + i);
+            let walletNew = new ethers.Wallet(hdNodeNew.privateKey);
+            console.log(`account${i} ${walletNew.address} privateKey: ${walletNew.privateKey}`)
+            wallets.push(walletNew);
+        }
     }).timeout(30000)
 })
 
@@ -58,7 +70,7 @@ async function getTxCount(provider, blockNumber, blockCount) {
  */
 async function concurrentRun(fnList = [], max = 5, taskName = "未命名") {
     if (!fnList.length) return;
-    console.log(`开始执行多个异步任务，最大并发数： ${max}`);
+    // console.log(`开始执行多个异步任务，最大并发数： ${max}`);
     const replyList = []; // 收集任务执行结果
     const count = fnList.length; // 总任务数量
     const startTime = new Date().getTime(); // 记录任务执行开始时间
@@ -84,6 +96,6 @@ async function concurrentRun(fnList = [], max = 5, taskName = "未命名") {
     // 使用 Promise.all 批量执行
     await Promise.all(scheduleList);
     const cost = (new Date().getTime() - startTime) / 1000;
-    console.log(`执行完成，最大并发数： ${max}，耗时：${cost}s`);
+    // console.log(`执行完成，最大并发数： ${max}，耗时：${cost}s`);
     return replyList;
 }
