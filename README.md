@@ -1,6 +1,6 @@
 # learnHardhat
 
-简单使用hardhat部署合约、调用合约函数，详细分析见[notion文章](https://www.notion.so/cryptape/hardhat-rpc-3d747b08b8a94eed8e1861fd541ebdb7)
+简单使用hardhat部署合约、调用合约函数，详细分析见[notion文章](https://cryptape.notion.site/hardhat-rpc-51702610a2f9471cadfe89feb646531d)
 
 ## 使用步骤
 1. 安装依赖包
