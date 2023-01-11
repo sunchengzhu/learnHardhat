@@ -4,12 +4,12 @@ describe("get msg", function () {
     it("get block msg", async () => {
         const blockNumber = await ethers.provider.getBlockNumber();
         const gasPrice = await getGasPrice(ethers.provider);
-        const bkMap = await getTxCount(ethers.provider, blockNumber, 10)
         console.log(`latest block number: ${blockNumber}`);
         console.log(`gas price: ${gasPrice} wei`);
-        bkMap.forEach(function (value, key) {
-            console.log(`block ${key} tx count: ${value}`)
-        });
+        // const bkMap = await getTxCount(ethers.provider, blockNumber, 10)
+        // bkMap.forEach(function (value, key) {
+        //     console.log(`block ${key} tx count: ${value}`)
+        // });
     }).timeout(60000)
 
     it("get account msg", async () => {
