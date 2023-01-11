@@ -19,6 +19,8 @@ npx hardhat compile
 通过在hardhat.config.js中设置defaultNetwork选择网络，如果选了本地网络localhost，则需要启动本地节点
 ```shell
 npx hardhat node
+//如果是提供需要远程调用node服务，则通过以下命令启动
+npx hardhat node --hostname 0.0.0.0 --port 8545
 ```
 5. 执行用例  
 打开test/demo.js，点击it旁边的绿色符号即可执行用例
