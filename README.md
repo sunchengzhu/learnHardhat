@@ -14,7 +14,7 @@ npm install
 
 ```shell
 npm run addRpcLog
-#如需关闭rpc日志功能，则执行以下命令
+#若需要关闭rpc日志功能，则执行以下命令
 rm -rf node_modules/hardhat && npm install hardhat
 ```
 
