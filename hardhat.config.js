@@ -8,9 +8,6 @@ const GOERLI_PRIVATE_KEY = "5af7968aa9b98c864e716ec42ea37d75a7904f0a5adc040405c2
 module.exports = {
     defaultNetwork: "localhost",
     networks: {
-        hardhat: {
-            loggingEnabled: true
-        },
         localhost: {
             url: "http://127.0.0.1:8545",
             accounts: {
@@ -18,8 +15,8 @@ module.exports = {
                 path: "m/44'/60'/0'/0",
                 initialIndex: 0,
                 count: 20,
-                passphrase: "",
-            },
+                passphrase: ""
+            }
         },
         goerli: {
             url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
