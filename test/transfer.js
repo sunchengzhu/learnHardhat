@@ -5,7 +5,7 @@ describe("transfer", function () {
         const signers = await ethers.getSigners();
         const from = signers[0].address;
         const to = "0x9DD3c285F8c253fB6327549E46f82E3DEdf59E34";
-        const ethValue = "1";
+        const ethValue = "0.01";
         const value = ethers.utils.parseUnits(ethValue, "ether").toHexString().replaceAll("0x0", "0x");
         await transfer(from, to, value);
     }).timeout(60000)
@@ -54,3 +54,7 @@ async function getTxReceipt(provider, txHash, count) {
 async function sleep(timeOut) {
     await new Promise(r => setTimeout(r, timeOut));
 }
+
+module.exports = {
+    getTxReceipt
+};
