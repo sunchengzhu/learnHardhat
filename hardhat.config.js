@@ -21,6 +21,16 @@ module.exports = {
         goerli: {
             url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
             accounts: [GOERLI_PRIVATE_KEY]
+        },
+        sepolia: {
+            url: "https://sepolia.infura.io/v3/6e588ef37c6c430582a2fea74726799a",
+            accounts: {
+                mnemonic: "test test test test test test test test test test test junk",
+                path: "m/44'/60'/0'/0",
+                initialIndex: 0,
+                count: 20,
+                passphrase: ""
+            }
         }
     },
     solidity: "0.8.17"
