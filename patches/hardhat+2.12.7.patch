@@ -1,5 +1,5 @@
 diff --git a/node_modules/hardhat/internal/core/providers/accounts.js b/node_modules/hardhat/internal/core/providers/accounts.js
-index 022afb1..800acf7 100644
+index c3d1903..6e43274 100644
 --- a/node_modules/hardhat/internal/core/providers/accounts.js
 +++ b/node_modules/hardhat/internal/core/providers/accounts.js
 @@ -125,6 +125,16 @@ class LocalAccountsProvider extends chainId_1.ProviderWrapperWithChainId {
@@ -20,10 +20,10 @@ index 022afb1..800acf7 100644
                  method: "eth_sendRawTransaction",
                  params: [bufferToHex(rawTransaction)],
 diff --git a/node_modules/hardhat/internal/core/providers/http.js b/node_modules/hardhat/internal/core/providers/http.js
-index 09e88c0..3e1ef67 100644
+index 7b84ee6..8d0c30f 100644
 --- a/node_modules/hardhat/internal/core/providers/http.js
 +++ b/node_modules/hardhat/internal/core/providers/http.js
-@@ -50,6 +50,10 @@ class HttpProvider extends events_1.EventEmitter {
+@@ -73,6 +73,10 @@ class HttpProvider extends events_1.EventEmitter {
          const error = new errors_2.ProviderError("HttpProviderError", -1);
          const jsonRpcRequest = this._getJsonRpcRequest(args.method, args.params);
          const jsonRpcResponse = await this._fetchJsonRpcResponse(jsonRpcRequest);
