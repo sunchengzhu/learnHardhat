@@ -2,17 +2,15 @@ const {ethers} = require("hardhat");
 const {getTxReceipt} = require("./transfer");
 
 describe("sendTransaction", function () {
+    //in goerli https://goerli.etherscan.io/address/0xebaf2ed9b9a7b1376d3a3b35c43025cb81c47bdb#writeContract
     it("sendTransaction demo", async () => {
-        const chainId = (await ethers.provider.getNetwork()).chainId;
-        if (chainId == 5) {
-            const to = "0xebaf2ed9b9a7b1376d3a3b35c43025cb81c47bdb";
-            const data = "0x552410770000000000000000000000000000000000000000000000000000000000000379";
-            const signers = await ethers.getSigners();
-            const from = signers[0].address;
-            const ethValue = "0";
-            const value = ethers.utils.parseUnits(ethValue, "ether").toHexString().replaceAll("0x0", "0x");
-            await sendTransaction(from, to, value, data);
-        }
+        const to = "0xebaf2ed9b9a7b1376d3a3b35c43025cb81c47bdb";
+        const data = "0x552410770000000000000000000000000000000000000000000000000000000000000379";
+        const signers = await ethers.getSigners();
+        const from = signers[0].address;
+        const ethValue = "0";
+        const value = ethers.utils.parseUnits(ethValue, "ether").toHexString().replaceAll("0x0", "0x");
+        await sendTransaction(from, to, value, data);
     }).timeout(60000)
 })
 
