@@ -12,7 +12,7 @@ describe("get msg", function () {
         // });
     }).timeout(60000)
 
-    it("get account msg", async () => {
+    it("get accounts msg", async () => {
         const signers = await ethers.getSigners();
         const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
         const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额");
@@ -22,6 +22,13 @@ describe("get msg", function () {
             console.log(`account${i} ${signers[i].address} balance: ${ethers.utils.formatEther(reply[i])} eth,nonce: ${reply1[i]}`);
         }
     }).timeout(60000)
+
+    it("get an account msg", async () => {
+        const address = "0x78b31C9D6ACaa8AD23B8bcab5E5D5ea438E169f0";
+        const balance = await ethers.provider.getBalance(address);
+        const count = await ethers.provider.getTransactionCount(address)
+        console.log(`${address} balance: ${ethers.utils.formatEther(balance)} eth,nonce: ${count}`);
+    }).timeout(30000)
 
     it("get random mnemonic", async () => {
         const wallet = ethers.Wallet.createRandom();
