@@ -21,6 +21,20 @@ module.exports = {
         goerli: {
             url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
             accounts: [GOERLI_PRIVATE_KEY]
+        },
+        gw_alphanet_v1: {
+            url: "https://gw-alphanet-v1.godwoken.cf/instant-finality-hack",
+            accounts: {
+                mnemonic: "test test test test test test test test test test test junk",
+                count: 100
+            }
+        },
+        gw_testnet_v1: {
+            url: "https://v1.testnet.godwoken.io/rpc/instant-finality-hack",
+            accounts: {
+                mnemonic: "test test test test test test test test test test test junk",
+                count: 100
+            }
         }
     },
     solidity: "0.8.17"
