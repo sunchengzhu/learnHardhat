@@ -1,4 +1,5 @@
 const {ethers, config} = require("hardhat");
+const {getTxReceipt} = require("./transfer");
 
 describe("get msg", function () {
     it("get block msg", async () => {
@@ -11,6 +12,12 @@ describe("get msg", function () {
         //     console.log(`block ${key} tx count: ${value}`)
         // });
     }).timeout(60000)
+
+    it("get receipt by txHash", async () => {
+        const txHash = "0x7d6fcc85fb2c22c60c4cbbc7dee6baf341fdd27984685fad66c129e82ac795c0"
+        const txReceipt = await getTxReceipt(ethers.provider, txHash, 100)
+        console.log(txReceipt)
+    }).timeout(30000)
 
     it("get accounts msg", async () => {
         const signers = await ethers.getSigners();
@@ -58,17 +65,6 @@ async function getGasPrice(provider) {
     return parseInt(gasPrice.toHexString().replaceAll("0x0", "0x"), 16);
 }
 
-async function getTxCount(provider, blockNumber, blockCount) {
-    const map = new Map();
-    for (let i = 0; i < blockCount; i++) {
-        let txCount = await ethers.provider.send("eth_getBlockTransactionCountByNumber", [
-            "0x" + (blockNumber - i).toString(16)
-        ])
-        map.set((blockNumber - i), parseInt(txCount, 16));
-    }
-    return map;
-}
-
 /**
  * 执行多个异步任务
  * @param {*} fnList 任务列表
@@ -105,4 +101,15 @@ async function concurrentRun(fnList = [], max = 5, taskName = "未命名") {
     const cost = (new Date().getTime() - startTime) / 1000;
     // console.log(`执行完成，最大并发数： ${max}，耗时：${cost}s`);
     return replyList;
+}
+
+async function getTxCount(provider, blockNumber, blockCount) {
+    const map = new Map();
+    for (let i = 0; i < blockCount; i++) {
+        let txCount = await ethers.provider.send("eth_getBlockTransactionCountByNumber", [
+            "0x" + (blockNumber - i).toString(16)
+        ])
+        map.set((blockNumber - i), parseInt(txCount, 16));
+    }
+    return map;
 }
