@@ -22,7 +22,7 @@ module.exports = {
             url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
             accounts: [PRIVATE_KEY]
         },
-        sepolia:{
+        sepolia: {
             url: `https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
             accounts: [PRIVATE_KEY]
         },
@@ -35,6 +35,13 @@ module.exports = {
         },
         gw_testnet_v1: {
             url: "https://v1.testnet.godwoken.io/rpc/instant-finality-hack",
+            accounts: {
+                mnemonic: "test test test test test test test test test test test junk",
+                count: 100
+            }
+        },
+        axon_devnet: {
+            url: "http://34.216.103.183:8000",
             accounts: {
                 mnemonic: "test test test test test test test test test test test junk",
                 count: 100
