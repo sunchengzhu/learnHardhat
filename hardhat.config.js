@@ -2,7 +2,7 @@ require("@nomicfoundation/hardhat-toolbox");
 
 const ALCHEMY_API_KEY = "RCBd9pi7A5J4YpdugIxnyvzIFliZYZH_";
 //0x7752DCD7c6ce4aED048c028021D635CBEc6C001D
-const GOERLI_PRIVATE_KEY = "5af7968aa9b98c864e716ec42ea37d75a7904f0a5adc040405c24562a9f186ee";
+const PRIVATE_KEY = "5af7968aa9b98c864e716ec42ea37d75a7904f0a5adc040405c24562a9f186ee";
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -20,7 +20,11 @@ module.exports = {
         },
         goerli: {
             url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
-            accounts: [GOERLI_PRIVATE_KEY]
+            accounts: [PRIVATE_KEY]
+        },
+        sepolia:{
+            url: `https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
+            accounts: [PRIVATE_KEY]
         },
         gw_alphanet_v1: {
             url: "https://gw-alphanet-v1.godwoken.cf/instant-finality-hack",
