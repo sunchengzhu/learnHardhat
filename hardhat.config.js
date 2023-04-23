@@ -5,11 +5,12 @@ const ALCHEMY_API_KEY = "RCBd9pi7A5J4YpdugIxnyvzIFliZYZH_";
 const PRIVATE_KEY = "5af7968aa9b98c864e716ec42ea37d75a7904f0a5adc040405c24562a9f186ee";
 //default mnemonic: test test test test test test test test test test test junk
 const MNEMONIC = "already luggage walk truly world rent unlock quick tube actual acoustic spin";
-const INITIALINDEX = 100;
+const INITIALINDEX = 0;
+const COUNT = 1000;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-    defaultNetwork: "localhost",
+    defaultNetwork: "gw_testnet_v1",
     networks: {
         localhost: {
             url: "http://127.0.0.1:8545",
@@ -34,7 +35,7 @@ module.exports = {
             accounts: {
                 mnemonic: MNEMONIC,
                 initialIndex: INITIALINDEX,
-                count: 100
+                count: COUNT
             }
         },
         gw_testnet_v1: {
@@ -42,7 +43,7 @@ module.exports = {
             accounts: {
                 mnemonic: MNEMONIC,
                 initialIndex: INITIALINDEX,
-                count: 100
+                count: COUNT
             }
         },
         axon_devnet: {
@@ -50,9 +51,11 @@ module.exports = {
             accounts: {
                 mnemonic: MNEMONIC,
                 initialIndex: INITIALINDEX,
-                count: 100
+                count: COUNT
             }
         }
     },
-    solidity: "0.8.17"
+    MNEMONIC,
+    INITIALINDEX,
+    COUNT
 };

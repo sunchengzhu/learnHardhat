@@ -6,7 +6,10 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "chai": "^4.3.7",
-    "hardhat": "2.13.0",
+    "hardhat": "^2.13.0",
     "patch-package": "^6.5.0"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.1.1"
   }
 }
