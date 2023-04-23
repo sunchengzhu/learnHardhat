@@ -5,6 +5,7 @@ const ALCHEMY_API_KEY = "RCBd9pi7A5J4YpdugIxnyvzIFliZYZH_";
 const PRIVATE_KEY = "5af7968aa9b98c864e716ec42ea37d75a7904f0a5adc040405c24562a9f186ee";
 //default mnemonic: test test test test test test test test test test test junk
 const MNEMONIC = "already luggage walk truly world rent unlock quick tube actual acoustic spin";
+const INITIALINDEX = 100;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -15,7 +16,7 @@ module.exports = {
             accounts: {
                 mnemonic: MNEMONIC,
                 path: "m/44'/60'/0'/0",
-                initialIndex: 0,
+                initialIndex: INITIALINDEX,
                 count: 20,
                 passphrase: ""
             }
@@ -32,6 +33,7 @@ module.exports = {
             url: "https://gw-alphanet-v1.godwoken.cf/instant-finality-hack",
             accounts: {
                 mnemonic: MNEMONIC,
+                initialIndex: INITIALINDEX,
                 count: 100
             }
         },
@@ -39,6 +41,7 @@ module.exports = {
             url: "https://v1.testnet.godwoken.io/rpc/instant-finality-hack",
             accounts: {
                 mnemonic: MNEMONIC,
+                initialIndex: INITIALINDEX,
                 count: 100
             }
         },
@@ -46,6 +49,7 @@ module.exports = {
             url: "http://34.216.103.183:8000",
             accounts: {
                 mnemonic: MNEMONIC,
+                initialIndex: INITIALINDEX,
                 count: 100
             }
         }

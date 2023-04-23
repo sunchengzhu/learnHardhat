@@ -25,8 +25,9 @@ describe("get msg", function () {
         const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额");
         const requestFnList1 = signers.map((signer) => () => ethers.provider.getTransactionCount(signer.address))
         const reply1 = await concurrentRun(requestFnList1, 20, "查询所有账户nonce");
+        const initialIndex = config.networks.localhost.accounts.initialIndex
         for (let i = 0; i < signers.length; i++) {
-            console.log(`account${i} ${signers[i].address} balance: ${ethers.utils.formatEther(reply[i])} eth,nonce: ${reply1[i]}`);
+            console.log(`account${i + initialIndex} ${signers[i].address} balance: ${ethers.utils.formatEther(reply[i])} eth,nonce: ${reply1[i]}`);
         }
     }).timeout(60000)
 
