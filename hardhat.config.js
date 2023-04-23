@@ -10,7 +10,7 @@ const COUNT = 1000;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-    defaultNetwork: "gw_testnet_v1",
+    defaultNetwork: "localhost",
     networks: {
         localhost: {
             url: "http://127.0.0.1:8545",
