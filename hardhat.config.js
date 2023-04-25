@@ -63,7 +63,7 @@ module.exports = {
         depositAmount: 0.01,
         //账户总数
         accountsNum: 10000,
-        //每间隔1000个账户取1个账户，作为第一批账户
+        //每间隔interval个账户取1个账户，作为第一批账户
         interval: 1000
     }
 };
