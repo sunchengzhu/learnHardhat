@@ -39,7 +39,7 @@ describe("get msg", function () {
         console.log(randomMnemonic)
     }).timeout(30000)
 
-    it("get private key from mnemonic", async () => {
+    it("get private key by mnemonic", async () => {
         const numWallet = 20
         const hdNode = ethers.utils.HDNode.fromMnemonic(MNEMONIC)
         // 派生路径：m / purpose' / coin_type' / account' / change / address_index
@@ -54,6 +54,7 @@ describe("get msg", function () {
         }
     }).timeout(30000)
 })
+
 
 async function getGasPrice(provider) {
     const gasPrice = await provider.getGasPrice()
@@ -74,6 +75,10 @@ async function getTxReceipt(provider, txHash, count) {
         await sleep(2000)
     }
     return response
+}
+
+async function sleep(timeOut) {
+    await new Promise(r => setTimeout(r, timeOut));
 }
 
 /**
@@ -113,3 +118,7 @@ async function concurrentRun(fnList = [], max = 5, taskName = "未命名") {
     // console.log(`执行完成，最大并发数： ${max}，耗时：${cost}s`);
     return replyList;
 }
+
+module.exports = {
+    getTxReceipt
+};
