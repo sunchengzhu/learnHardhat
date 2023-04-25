@@ -1,5 +1,5 @@
 const {ethers} = require("hardhat");
-const {INITIALINDEX, MNEMONIC} = require("../hardhat.config");
+const {MNEMONIC} = require("../hardhat.config");
 
 describe("get msg", function () {
     it("get block msg", async () => {
