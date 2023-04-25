@@ -29,22 +29,6 @@ describe("prepare", function () {
         console.log(`account0 ${addressList[0]} balance: ${ethers.utils.formatEther(balance)} eth,nonce: ${count}`)
     }).timeout(60000)
 
-    it("check accounts balance", async () => {
-        const signers = await ethers.getSigners()
-        const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
-        const reply = await concurrentRun(requestFnList, 50, "查询所有账户余额");
-        const requestFnList1 = signers.map((signer) => () => ethers.provider.getTransactionCount(signer.address))
-        const reply1 = await concurrentRun(requestFnList1, 50, "查询所有账户nonce")
-        for (let i = 0; i < signers.length; i++) {
-            let balance = ethers.utils.formatEther(reply[i])
-            if (balance < perf.depositAmount) {
-                console.error(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth < ${perf.depositAmount} eth,nonce: ${reply1[i]}`)
-            } else {
-                console.log(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth,nonce: ${reply1[i]}`)
-            }
-        }
-    }).timeout(300000)
-
     it("deposit", async function () {
         const value = ethers.utils.parseUnits((perf.depositAmount).toString(), "ether").toHexString().replaceAll("0x0", "0x");
         const beginNonce = await ethers.provider.getTransactionCount(signers[0].address)
@@ -59,14 +43,37 @@ describe("prepare", function () {
     }).timeout(600000)
 
     it("withdraw", async function () {
+        const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
+        const reply = await concurrentRun(requestFnList, 50, "查询所有账户余额")
         for (let i = 0; i < COUNT; i++) {
-            let balance = await ethers.provider.getBalance(signers[i].address)
-            let value = balance.sub(ethers.BigNumber.from(21000).mul(ethers.BigNumber.from(gasPrice))).toHexString().replaceAll("0x0", "0x")
-            await transferWithoutNonce(signers[i].address, signers[0].address, gasPrice, value)
+            let value = reply[i].sub(ethers.BigNumber.from(21000).mul(gasPrice)).toHexString().replaceAll("0x0", "0x")
+            if (ethers.utils.formatEther(value) > 0) {
+                await transferWithoutNonce(signers[i].address, signers[0].address, gasPrice, value)
+            }
         }
     }).timeout(600000)
 })
 
+describe("check", function () {
+    it("check accounts balance", async function () {
+        const signers = await ethers.getSigners()
+        const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
+        const reply = await concurrentRun(requestFnList, 50, "查询所有账户余额");
+        const requestFnList1 = signers.map((signer) => () => ethers.provider.getTransactionCount(signer.address))
+        const reply1 = await concurrentRun(requestFnList1, 50, "查询所有账户nonce")
+        let j = 0
+        for (let i = 0; i < signers.length; i++) {
+            let balance = ethers.utils.formatEther(reply[i])
+            if (balance < perf.depositAmount) {
+                console.error(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth < ${perf.depositAmount} eth,nonce: ${reply1[i]}`)
+            } else {
+                console.log(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth,nonce: ${reply1[i]}`)
+                j++
+            }
+        }
+        expect(j).to.be.equal(COUNT)
+    }).timeout(120000)
+})
 
 async function getAddressList(accountsNum, interval, mnemonic) {
     const hdNode = ethers.utils.HDNode.fromMnemonic(mnemonic)
