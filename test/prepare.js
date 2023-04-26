@@ -19,9 +19,9 @@ describe("deposit", function () {
         }
         console.log("sleep 10s")
         await sleep(10000)
-    }).timeout(600000)
+    }).timeout(400000)
 
-    it("check accounts balance", async function () {
+    it("check accounts balance after deposit", async function () {
         const signers = await ethers.getSigners()
         const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
         const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额");
@@ -38,9 +38,7 @@ describe("deposit", function () {
             }
         }
         expect(j).to.be.equal(COUNT)
-    }).timeout(180000)
-
-
+    }).timeout(120000)
 })
 
 describe("withdraw", function () {
@@ -56,6 +54,25 @@ describe("withdraw", function () {
             }
         }
     }).timeout(600000)
+
+    it("check accounts balance after withdraw", async function () {
+        const signers = await ethers.getSigners()
+        const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
+        const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额");
+        const requestFnList1 = signers.map((signer) => () => ethers.provider.getTransactionCount(signer.address))
+        const reply1 = await concurrentRun(requestFnList1, 20, "查询所有账户nonce")
+        let j = 0
+        for (let i = 0; i < signers.length; i++) {
+            let balance = ethers.utils.formatEther(reply[i])
+            if (i > 0 && balance > 0) {
+                console.error(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth < ${perf.depositAmount} eth,nonce: ${reply1[i]}`)
+            } else {
+                console.log(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth,nonce: ${reply1[i]}`)
+                j++
+            }
+        }
+        expect(j).to.be.equal(COUNT)
+    }).timeout(120000)
 })
 
 async function transfer(from, to, gasPrice, value, nonce) {

@@ -2,8 +2,8 @@ const {ethers} = require("hardhat");
 const {perf, MNEMONIC, COUNT} = require("../hardhat.config");
 const {getSufficientGasPrice, getTxReceipt} = require("./prepare");
 
-describe("first batch", function () {
-    it("deposit to first batch of accounts", async function () {
+describe("recharge", function () {
+    it("recharge the first batch of accounts", async function () {
         const gasPrice = await getSufficientGasPrice(ethers.provider)
         const signers = await ethers.getSigners()
         const addressList = await getAddressList(perf.accountsNum, perf.interval, MNEMONIC)
