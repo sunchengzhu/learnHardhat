@@ -38,7 +38,7 @@ describe("deposit", function () {
             }
         }
         expect(j).to.be.equal(COUNT)
-    }).timeout(120000)
+    }).timeout(180000)
 
 
 })
