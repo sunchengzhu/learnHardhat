@@ -1,35 +1,12 @@
 const {ethers} = require("hardhat")
 const BigNumber = require('bignumber.js');
-const {COUNT, MNEMONIC, perf, INITIALINDEX} = require("../hardhat.config");
+const {COUNT, perf, INITIALINDEX} = require("../hardhat.config");
 const {expect} = require("chai");
-const {getTxReceipt} = require("./getMsg");
 
-
-describe("prepare", function () {
-    let gasPrice, signers
-    before(async function () {
-        this.timeout(60000)
-        gasPrice = await getSufficientGasPrice(ethers.provider)
-        signers = await ethers.getSigners()
-    })
-
-    it("deposit to first batch of accounts", async function () {
-        const addressList = await getAddressList(perf.accountsNum, perf.interval, MNEMONIC)
-        if (addressList.length > 1) {
-            for (let i = 1; i < addressList.length; i++) {
-                const value = ethers.utils.parseUnits((perf.depositAmount * COUNT).toString(), "ether").toHexString().replaceAll("0x0", "0x")
-                await transferWithReceipt(signers[0].address, addressList[i], gasPrice, value)
-                const balance = await ethers.provider.getBalance(addressList[i])
-                const count = await ethers.provider.getTransactionCount(addressList[i])
-                console.log(`account${i * perf.interval} ${addressList[i]} balance: ${ethers.utils.formatEther(balance)} eth,nonce: ${count}`)
-            }
-        }
-        const balance = await ethers.provider.getBalance(addressList[0])
-        const count = await ethers.provider.getTransactionCount(addressList[0])
-        console.log(`account0 ${addressList[0]} balance: ${ethers.utils.formatEther(balance)} eth,nonce: ${count}`)
-    }).timeout(60000)
-
-    it("deposit", async function () {
+describe("deposit", function () {
+    it("deposit to each account", async function () {
+        const signers = await ethers.getSigners()
+        const gasPrice = await getSufficientGasPrice(ethers.provider)
         const value = ethers.utils.parseUnits((perf.depositAmount).toString(), "ether").toHexString().replaceAll("0x0", "0x");
         const beginNonce = await ethers.provider.getTransactionCount(signers[0].address)
         for (let i = 1; i < COUNT; i++) {
@@ -40,27 +17,16 @@ describe("prepare", function () {
                 i--
             }
         }
+        console.log("sleep 10s")
+        await sleep(10000)
     }).timeout(600000)
 
-    it("withdraw", async function () {
-        const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
-        const reply = await concurrentRun(requestFnList, 50, "查询所有账户余额")
-        for (let i = 0; i < COUNT; i++) {
-            let value = reply[i].sub(ethers.BigNumber.from(21000).mul(gasPrice)).toHexString().replaceAll("0x0", "0x")
-            if (ethers.utils.formatEther(value) > 0) {
-                await transferWithoutNonce(signers[i].address, signers[0].address, gasPrice, value)
-            }
-        }
-    }).timeout(600000)
-})
-
-describe("check", function () {
     it("check accounts balance", async function () {
         const signers = await ethers.getSigners()
         const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
-        const reply = await concurrentRun(requestFnList, 50, "查询所有账户余额");
+        const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额");
         const requestFnList1 = signers.map((signer) => () => ethers.provider.getTransactionCount(signer.address))
-        const reply1 = await concurrentRun(requestFnList1, 50, "查询所有账户nonce")
+        const reply1 = await concurrentRun(requestFnList1, 20, "查询所有账户nonce")
         let j = 0
         for (let i = 0; i < signers.length; i++) {
             let balance = ethers.utils.formatEther(reply[i])
@@ -73,20 +39,24 @@ describe("check", function () {
         }
         expect(j).to.be.equal(COUNT)
     }).timeout(120000)
+
+
 })
 
-async function getAddressList(accountsNum, interval, mnemonic) {
-    const hdNode = ethers.utils.HDNode.fromMnemonic(mnemonic)
-    let addressList = []
-    if (accountsNum > interval) {
-        const loopCount = Math.floor(accountsNum / interval)
-        for (let i = 0; i < loopCount; i++) {
-            let hdNodeNew = hdNode.derivePath("m/44'/60'/0'/0/" + i * interval)
-            addressList.push(hdNodeNew.address)
+describe("withdraw", function () {
+    it("withdraw", async function () {
+        const signers = await ethers.getSigners()
+        const gasPrice = await getSufficientGasPrice(ethers.provider)
+        const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
+        const reply = await concurrentRun(requestFnList, 50, "查询所有账户余额")
+        for (let i = 0; i < COUNT; i++) {
+            let value = reply[i].sub(ethers.BigNumber.from(21000).mul(gasPrice)).toHexString().replaceAll("0x0", "0x")
+            if (ethers.utils.formatEther(value) > 0) {
+                await transferWithoutNonce(signers[i].address, signers[0].address, gasPrice, value)
+            }
         }
-    }
-    return addressList
-}
+    }).timeout(600000)
+})
 
 async function transfer(from, to, gasPrice, value, nonce) {
     await ethers.provider.send("eth_sendTransaction", [{
@@ -109,15 +79,25 @@ async function transferWithoutNonce(from, to, gasPrice, value) {
     }])
 }
 
-async function transferWithReceipt(from, to, gasPrice, value) {
-    const tx = await ethers.provider.send("eth_sendTransaction", [{
-        from,
-        to,
-        "gas": "0xc738",
-        "gasPrice": gasPrice,
-        "value": value,
-    }])
-    await getTxReceipt(ethers.provider, tx, 100)
+
+async function getTxReceipt(provider, txHash, count) {
+    let response
+    for (let i = 0; i < count; i++) {
+        response = await provider.getTransactionReceipt(txHash)
+        if (response == null) {
+            await sleep(2000)
+            continue
+        }
+        if (response.confirmations >= 1) {
+            return response
+        }
+        await sleep(2000)
+    }
+    return response
+}
+
+async function sleep(timeOut) {
+    await new Promise(r => setTimeout(r, timeOut));
 }
 
 async function getSufficientGasPrice(provider) {
@@ -166,3 +146,9 @@ async function concurrentRun(fnList = [], max = 5, taskName = "未命名") {
     // console.log(`执行完成，最大并发数： ${max}，耗时：${cost}s`);
     return replyList;
 }
+
+module.exports = {
+    getSufficientGasPrice,
+    concurrentRun,
+    getTxReceipt
+};

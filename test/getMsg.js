@@ -1,5 +1,6 @@
 const {ethers} = require("hardhat");
-const {MNEMONIC} = require("../hardhat.config");
+const {MNEMONIC, INITIALINDEX} = require("../hardhat.config");
+const {concurrentRun, getTxReceipt} = require("./prepare");
 
 describe("get msg", function () {
     it("get block msg", async () => {
@@ -8,6 +9,17 @@ describe("get msg", function () {
         console.log(`latest block number: ${blockNumber}`)
         console.log(`gas price: ${gasPrice} wei`)
     }).timeout(30000)
+
+    it("get accounts msg", async () => {
+        const signers = await ethers.getSigners();
+        const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
+        const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额");
+        const requestFnList1 = signers.map((signer) => () => ethers.provider.getTransactionCount(signer.address))
+        const reply1 = await concurrentRun(requestFnList1, 20, "查询所有账户nonce");
+        for (let i = 0; i < signers.length; i++) {
+            console.log(`account${i + INITIALINDEX} ${signers[i].address} balance: ${ethers.utils.formatEther(reply[i])} eth,nonce: ${reply1[i]}`);
+        }
+    }).timeout(60000)
 
     it("get an account msg", async () => {
         const address = "0x78b31C9D6ACaa8AD23B8bcab5E5D5ea438E169f0"
@@ -44,33 +56,7 @@ describe("get msg", function () {
     }).timeout(30000)
 })
 
-
 async function getGasPrice(provider) {
     const gasPrice = await provider.getGasPrice()
     return parseInt(gasPrice.toHexString().replaceAll("0x0", "0x"), 16)
 }
-
-async function getTxReceipt(provider, txHash, count) {
-    let response
-    for (let i = 0; i < count; i++) {
-        response = await provider.getTransactionReceipt(txHash)
-        if (response == null) {
-            await sleep(2000)
-            continue
-        }
-        if (response.confirmations >= 1) {
-            return response
-        }
-        await sleep(2000)
-    }
-    return response
-}
-
-async function sleep(timeOut) {
-    await new Promise(r => setTimeout(r, timeOut));
-}
-
-
-module.exports = {
-    getTxReceipt
-};
