@@ -19,7 +19,7 @@ describe("get msg", function () {
         for (let i = 0; i < signers.length; i++) {
             console.log(`account${i + INITIALINDEX} ${signers[i].address} balance: ${ethers.utils.formatEther(reply[i])} eth,nonce: ${reply1[i]}`);
         }
-    }).timeout(60000)
+    }).timeout(180000)
 
     it("get an account msg", async () => {
         const address = "0x78b31C9D6ACaa8AD23B8bcab5E5D5ea438E169f0"
@@ -43,15 +43,10 @@ describe("get msg", function () {
     it("get private key by mnemonic", async () => {
         const numWallet = 20
         const hdNode = ethers.utils.HDNode.fromMnemonic(MNEMONIC)
-        // 派生路径：m / purpose' / coin_type' / account' / change / address_index
-        // 我们只需要切换最后一位address_index，就可以从hdNode派生出新钱包
         let basePath = "m/44'/60'/0'/0";
-        let wallets = [];
         for (let i = 0; i < numWallet; i++) {
             let hdNodeNew = hdNode.derivePath(basePath + "/" + i);
-            let walletNew = new ethers.Wallet(hdNodeNew.privateKey);
-            console.log(`account${i} ${walletNew.address} privateKey: ${walletNew.privateKey}`)
-            wallets.push(walletNew);
+            console.log(`account${i} ${hdNodeNew.address} privateKey: ${hdNodeNew.privateKey}`)
         }
     }).timeout(30000)
 })
