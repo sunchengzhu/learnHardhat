@@ -1,8 +1,9 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("dotenv")
 
 //default mnemonic: test test test test test test test test test test test junk
-const MNEMONIC = "already luggage walk truly world rent unlock quick tube actual acoustic spin";
-const INITIALINDEX = 0;
+const MNEMONIC = process.env.MNEMONIC;
+const INITIALINDEX = process.env.INITIALINDEX;
 const COUNT = 1000;
 
 /** @type import('hardhat/config').HardhatUserConfig */
