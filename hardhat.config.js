@@ -3,8 +3,8 @@ require('dotenv').config()
 
 //default mnemonic: test test test test test test test test test test test junk
 const MNEMONIC = process.env.MNEMONIC;
-const INITIALINDEX = process.env.INITIALINDEX;
-const COUNT = 1000;
+const INITIALINDEX = parseInt(process.env.INITIALINDEX);
+const COUNT = 20;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
