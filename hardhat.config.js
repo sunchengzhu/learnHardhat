@@ -8,7 +8,7 @@ const COUNT = 1000;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-    defaultNetwork: "localhost",
+    defaultNetwork: "gw_testnet_v1",
     networks: {
         gw_alphanet_v1: {
             url: "https://gw-alphanet-v1.godwoken.cf/instant-finality-hack",
