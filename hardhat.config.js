@@ -1,5 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
-require("dotenv")
+require('dotenv').config()
 
 //default mnemonic: test test test test test test test test test test test junk
 const MNEMONIC = process.env.MNEMONIC;
