@@ -4,22 +4,22 @@ require('dotenv').config()
 //default mnemonic: test test test test test test test test test test test junk
 const MNEMONIC = process.env.MNEMONIC;
 const INITIALINDEX = parseInt(process.env.INITIALINDEX);
-const COUNT = 20;
+const COUNT = 200;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
     defaultNetwork: "gw_testnet_v1",
     networks: {
-        gw_alphanet_v1: {
-            url: "https://gw-alphanet-v1.godwoken.cf/instant-finality-hack",
+        gw_testnet_v1: {
+            url: "https://v1.testnet.godwoken.io/rpc/instant-finality-hack",
             accounts: {
                 mnemonic: MNEMONIC,
                 initialIndex: INITIALINDEX,
                 count: COUNT
             }
         },
-        gw_testnet_v1: {
-            url: "https://v1.testnet.godwoken.io/rpc/instant-finality-hack",
+        gw_alphanet_v1: {
+            url: "https://gw-alphanet-v1.godwoken.cf/instant-finality-hack",
             accounts: {
                 mnemonic: MNEMONIC,
                 initialIndex: INITIALINDEX,

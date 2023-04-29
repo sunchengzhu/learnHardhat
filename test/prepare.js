@@ -1,25 +1,47 @@
 const {ethers} = require("hardhat")
 const BigNumber = require('bignumber.js');
-const {COUNT, perf, INITIALINDEX} = require("../hardhat.config");
+const {COUNT, perf, INITIALINDEX, MNEMONIC} = require("../hardhat.config");
 const {expect} = require("chai");
+
+describe("recharge", async function () {
+    it("recharge the first batch of accounts", async function () {
+        const gasPrice = await getSufficientGasPrice(ethers.provider)
+        const signers = await ethers.getSigners()
+        const addressList = await getAddressList(perf.accountsNum, perf.interval, MNEMONIC)
+        if (addressList.length > 1) {
+            for (let i = 1; i < addressList.length; i++) {
+                const value = ethers.utils.parseUnits((perf.depositAmount * COUNT * 1.2).toString(), "ether").toHexString().replaceAll("0x0", "0x")
+                await transferWithReceipt(signers[0].address, addressList[i], gasPrice, value)
+                const balance = await ethers.provider.getBalance(addressList[i])
+                const count = await ethers.provider.getTransactionCount(addressList[i])
+                console.log(`account${i * perf.interval} ${addressList[i]} balance: ${ethers.utils.formatEther(balance)} eth,nonce: ${count}`)
+            }
+        }
+        const balance = await ethers.provider.getBalance(addressList[0])
+        const count = await ethers.provider.getTransactionCount(addressList[0])
+        console.log(`account0 ${addressList[0]} balance: ${ethers.utils.formatEther(balance)} eth,nonce: ${count}`)
+    }).timeout(120000)
+})
 
 describe("deposit", function () {
     it("deposit to each account", async function () {
-        const signers = await ethers.getSigners()
+        console.log(`deposit from account${INITIALINDEX}`)
         const gasPrice = await getSufficientGasPrice(ethers.provider)
+        const signers = await ethers.getSigners()
         const value = ethers.utils.parseUnits((perf.depositAmount).toString(), "ether").toHexString().replaceAll("0x0", "0x");
         const beginNonce = await ethers.provider.getTransactionCount(signers[0].address)
         for (let i = 1; i < COUNT; i++) {
             try {
                 await transfer(signers[0].address, signers[i].address, gasPrice, value, ethers.BigNumber.from(beginNonce + i - 1).toHexString().replaceAll("0x0", "0x"))
             } catch (e) {
+                if (!e.toString().includes("invalid nonce")) {
+                    console.log(e)
+                }
                 expect(e.toString()).to.be.contains("invalid nonce")
                 i--
             }
         }
-        console.log("sleep 10s")
-        await sleep(10000)
-    }).timeout(400000)
+    }).timeout(600000)
 
     it("check accounts balance after deposit", async function () {
         const signers = await ethers.getSigners()
@@ -46,7 +68,7 @@ describe("withdraw", function () {
         const signers = await ethers.getSigners()
         const gasPrice = await getSufficientGasPrice(ethers.provider)
         const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
-        const reply = await concurrentRun(requestFnList, 50, "查询所有账户余额")
+        const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额")
         for (let i = 0; i < COUNT; i++) {
             let value = reply[i].sub(ethers.BigNumber.from(21000).mul(gasPrice)).toHexString().replaceAll("0x0", "0x")
             if (ethers.utils.formatEther(value) > 0) {
@@ -75,6 +97,30 @@ describe("withdraw", function () {
     }).timeout(120000)
 })
 
+async function getAddressList(accountsNum, interval, mnemonic) {
+    const hdNode = ethers.utils.HDNode.fromMnemonic(mnemonic)
+    let addressList = []
+    if (accountsNum > interval) {
+        const loopCount = Math.floor(accountsNum / interval)
+        for (let i = 0; i < loopCount; i++) {
+            let hdNodeNew = hdNode.derivePath("m/44'/60'/0'/0/" + i * interval)
+            addressList.push(hdNodeNew.address)
+        }
+    }
+    return addressList
+}
+
+async function transferWithReceipt(from, to, gasPrice, value) {
+    const tx = await ethers.provider.send("eth_sendTransaction", [{
+        from,
+        to,
+        "gas": "0xc738",
+        "gasPrice": gasPrice,
+        "value": value,
+    }])
+    await getTxReceipt(ethers.provider, tx, 100)
+}
+
 async function transfer(from, to, gasPrice, value, nonce) {
     await ethers.provider.send("eth_sendTransaction", [{
         from,
@@ -95,7 +141,6 @@ async function transferWithoutNonce(from, to, gasPrice, value) {
         "value": value
     }])
 }
-
 
 async function getTxReceipt(provider, txHash, count) {
     let response
@@ -165,7 +210,6 @@ async function concurrentRun(fnList = [], max = 5, taskName = "未命名") {
 }
 
 module.exports = {
-    getSufficientGasPrice,
     concurrentRun,
     getTxReceipt
 };
