@@ -34,11 +34,12 @@ describe("deposit", function () {
             try {
                 await transfer(signers[0].address, signers[i].address, gasPrice, value, ethers.BigNumber.from(beginNonce + i - 1).toHexString().replaceAll("0x0", "0x"))
             } catch (e) {
-                if (!e.toString().includes("invalid nonce")) {
+                if (e.toString().includes("invalid nonce")) {
+                    i--
+                } else {
                     console.log(e)
                 }
                 expect(e.toString()).to.be.contains("invalid nonce")
-                i--
             }
         }
     }).timeout(600000)
