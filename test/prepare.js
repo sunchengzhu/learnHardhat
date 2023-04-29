@@ -1,20 +1,24 @@
 const {ethers} = require("hardhat")
 const BigNumber = require('bignumber.js');
-const {COUNT, perf, INITIALINDEX, MNEMONIC} = require("../hardhat.config");
+const {COUNT, INITIALINDEX, MNEMONIC} = require("../hardhat.config");
 const {expect} = require("chai");
+
+const accountsNum = parseInt(process.env.ACCOUNTSNUM)
+const depositAmount = parseInt(process.env.DEPOSITAMOUNT)
+const interval = COUNT
 
 describe("recharge", async function () {
     it("recharge the first batch of accounts", async function () {
         const gasPrice = await getSufficientGasPrice(ethers.provider)
         const signers = await ethers.getSigners()
-        const addressList = await getAddressList(perf.accountsNum, perf.interval, MNEMONIC)
+        const addressList = await getAddressList(accountsNum, interval, MNEMONIC)
         if (addressList.length > 1) {
             for (let i = 1; i < addressList.length; i++) {
-                const value = ethers.utils.parseUnits((perf.depositAmount * COUNT * 1.2).toString(), "ether").toHexString().replaceAll("0x0", "0x")
+                const value = ethers.utils.parseUnits((depositAmount * COUNT * 1.2).toString(), "ether").toHexString().replaceAll("0x0", "0x")
                 await transferWithReceipt(signers[0].address, addressList[i], gasPrice, value)
                 const balance = await ethers.provider.getBalance(addressList[i])
                 const count = await ethers.provider.getTransactionCount(addressList[i])
-                console.log(`account${i * perf.interval} ${addressList[i]} balance: ${ethers.utils.formatEther(balance)} eth,nonce: ${count}`)
+                console.log(`account${i * interval} ${addressList[i]} balance: ${ethers.utils.formatEther(balance)} eth,nonce: ${count}`)
             }
         }
         const balance = await ethers.provider.getBalance(addressList[0])
@@ -28,7 +32,7 @@ describe("deposit", function () {
         console.log(`deposit from account${INITIALINDEX}`)
         const gasPrice = await getSufficientGasPrice(ethers.provider)
         const signers = await ethers.getSigners()
-        const value = ethers.utils.parseUnits((perf.depositAmount).toString(), "ether").toHexString().replaceAll("0x0", "0x");
+        const value = ethers.utils.parseUnits(depositAmount.toString(), "ether").toHexString().replaceAll("0x0", "0x");
         const beginNonce = await ethers.provider.getTransactionCount(signers[0].address)
         for (let i = 1; i < COUNT; i++) {
             try {

@@ -4,7 +4,7 @@ require('dotenv').config()
 //default mnemonic: test test test test test test test test test test test junk
 const MNEMONIC = process.env.MNEMONIC;
 const INITIALINDEX = parseInt(process.env.INITIALINDEX);
-const COUNT = 200;
+const COUNT = parseInt(process.env.COUNT);
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -37,13 +37,5 @@ module.exports = {
     },
     MNEMONIC,
     INITIALINDEX,
-    COUNT,
-    perf: {
-        //每个账户充值金额
-        depositAmount: 0.01,
-        //账户总数
-        accountsNum: 10000,
-        //每间隔interval个账户取1个账户，作为第一批账户
-        interval: 1000
-    }
+    COUNT
 };
