@@ -1,9 +1,10 @@
 const {spawn} = require('child_process');
 require('dotenv').config()
 
-const processNum = 5
-for (let i = 0; i < processNum; i++) {
-    const test = spawn('npx', ['hardhat', 'test', '--grep', 'deposit to each account', '--network', process.argv[2]], {
+const processNum = parseInt(process.argv[2])
+const fromIndex = parseInt(process.argv[3])
+for (let i = (0 + fromIndex); i < (processNum + fromIndex); i++) {
+    const test = spawn('npx', ['hardhat', 'test', '--grep', process.argv[4], '--network', process.argv[5]], {
         env: {
             ...process.env,
             INITIALINDEX: `${i * process.env.COUNT}`
