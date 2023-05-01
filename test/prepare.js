@@ -4,7 +4,7 @@ const {COUNT, INITIALINDEX, MNEMONIC} = require("../hardhat.config");
 const {expect} = require("chai");
 
 const accountsNum = parseInt(process.env.ACCOUNTSNUM)
-const depositAmount = parseInt(process.env.DEPOSITAMOUNT)
+const depositAmount = parseFloat(process.env.DEPOSITAMOUNT)
 const interval = COUNT
 
 describe("recharge", async function () {
