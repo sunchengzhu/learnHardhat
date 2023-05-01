@@ -57,7 +57,7 @@ describe("deposit", function () {
         let j = 0
         for (let i = 0; i < signers.length; i++) {
             let balance = ethers.utils.formatEther(reply[i])
-            if (balance < perf.depositAmount) {
+            if (balance < depositAmount) {
                 console.error(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth < ${perf.depositAmount} eth,nonce: ${reply1[i]}`)
             } else {
                 console.log(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth,nonce: ${reply1[i]}`)
