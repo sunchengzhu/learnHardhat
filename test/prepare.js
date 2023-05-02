@@ -92,7 +92,7 @@ describe("withdraw", function () {
         for (let i = 0; i < signers.length; i++) {
             let balance = ethers.utils.formatEther(reply[i])
             if (i > 0 && balance > 0) {
-                console.error(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth < ${perf.depositAmount} eth,nonce: ${reply1[i]}`)
+                console.error(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth < ${depositAmount} eth,nonce: ${reply1[i]}`)
             } else {
                 console.log(`account${i + INITIALINDEX} ${signers[i].address} balance: ${balance} eth,nonce: ${reply1[i]}`)
                 j++
