@@ -17,7 +17,9 @@ for (let i = (0 + fromIndex); i < (processNum + fromIndex); i++) {
         console.error(`${data}`);
     });
     test.on('close', (code) => {
-        console.log(`child_process_${i} exited with code ${code}`);
+        if (code != 0) {
+            console.log(`child_process_${i} exited with code ${code}`);
+        }
     });
 }
 
