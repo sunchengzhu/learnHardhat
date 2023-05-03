@@ -1,6 +1,6 @@
 const {ethers} = require("hardhat");
 const {MNEMONIC, INITIALINDEX} = require("../hardhat.config");
-const {concurrentRun, getTxReceipt} = require("./prepare");
+const {concurrentRun, getTxReceipt} = require("./distribute");
 
 describe("get msg", function () {
     it("get block msg", async () => {
@@ -29,7 +29,7 @@ describe("get msg", function () {
     }).timeout(30000)
 
     it("get receipt by txHash", async () => {
-        const txHash = "0x7d6fcc85fb2c22c60c4cbbc7dee6baf341fdd27984685fad66c129e82ac795c0"
+        const txHash = "0x72c0657902c37defc17c395e3e9cbbcd66fe8c9a04248f7b589efcd39d6290f0"
         const txReceipt = await getTxReceipt(ethers.provider, txHash, 100)
         console.log(txReceipt)
     }).timeout(30000)
