@@ -50,13 +50,18 @@ describe("deposit", function () {
 })
 
 describe("withdraw", function () {
+    let signers, gasPrice, hdNode
+    before(async function () {
+        this.timeout(60000);
+        signers = await ethers.getSigners()
+        gasPrice = await getSufficientGasPrice(ethers.provider)
+        hdNode = ethers.utils.HDNode.fromMnemonic(MNEMONIC)
+    });
+
     it("withdraw", async function () {
         console.log(`withdraw from account${INITIALINDEX}`)
-        const signers = await ethers.getSigners()
-        const gasPrice = await getSufficientGasPrice(ethers.provider)
         const requestFnList = signers.map((signer) => () => ethers.provider.getBalance(signer.address))
         const reply = await concurrentRun(requestFnList, 20, "查询所有账户余额")
-        const hdNode = ethers.utils.HDNode.fromMnemonic(MNEMONIC)
         for (let i = 0; i < COUNT; i++) {
             let value = reply[i].sub(ethers.BigNumber.from(21000).mul(gasPrice)).toHexString().replaceAll("0x0", "0x")
             if (ethers.utils.formatEther(value) > 0) {
@@ -64,6 +69,24 @@ describe("withdraw", function () {
             }
         }
     }).timeout(600000)
+
+    it("transfer all balance", async function () {
+        const signer = signers[0].address
+        const to = hdNode.address
+        const balance = await ethers.provider.getBalance(signer)
+        const value = balance.sub(ethers.BigNumber.from(21000).mul(gasPrice)).toHexString().replaceAll("0x0", "0x")
+        if (ethers.utils.formatEther(value) > 0) {
+            const tx = await ethers.provider.send("eth_sendTransaction", [{
+                signer,
+                to,
+                "gas": "0x5208", //21000
+                "gasPrice": gasPrice,
+                "value": value
+            }])
+            await getTxReceipt(ethers.provider, tx, 100)
+        }
+    }).timeout(60000)
+
 })
 
 describe("check accounts balance", function () {
