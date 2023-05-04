@@ -55,7 +55,7 @@ describe("withdraw", function () {
         this.timeout(60000);
         signers = await ethers.getSigners()
         gasPrice = await getSufficientGasPrice(ethers.provider)
-        hdNode = ethers.utils.HDNode.fromMnemonic(MNEMONIC)
+        hdNode = ethers.utils.HDNode.fromMnemonic(MNEMONIC).derivePath("m/44'/60'/0'/0/0")
     });
 
     it("withdraw", async function () {
@@ -86,7 +86,6 @@ describe("withdraw", function () {
             await getTxReceipt(ethers.provider, tx, 100)
         }
     }).timeout(60000)
-
 })
 
 describe("check accounts balance", function () {
