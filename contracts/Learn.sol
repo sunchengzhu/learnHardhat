@@ -2,9 +2,10 @@
 pragma solidity ^0.8.0;
 
 contract Learn {
-    uint value;
+    uint value = 666;
 
     function setValue(uint a) public returns (uint) {
+        require(a != 666, "invalid value");
         value = a;
         return value;
     }
