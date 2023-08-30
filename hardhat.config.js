@@ -6,7 +6,7 @@ const GOERLI_PRIVATE_KEY = "5af7968aa9b98c864e716ec42ea37d75a7904f0a5adc040405c2
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-    defaultNetwork: "localhost",
+    defaultNetwork: "gw_alphanet_v1",
     networks: {
         localhost: {
             url: "http://127.0.0.1:8545",
@@ -16,6 +16,18 @@ module.exports = {
                 initialIndex: 0,
                 count: 20,
                 passphrase: ""
+            }
+        },
+        gw_alphanet_v1: {
+            url: "https://gw-alphanet-v1.godwoken.cf/instant-finality-hack",
+            accounts: {
+                mnemonic: "test test test test test test test test test test test junk",
+            }
+        },
+        axon_alphanet: {
+            url: "https://rpc-alphanet-axon.ckbapp.dev",
+            accounts: {
+                mnemonic: "test test test test test test test test test test test junk",
             }
         },
         goerli: {
